@@ -7,6 +7,7 @@ namespace Domain
 {
     public class Activity
     {
+        //можно указать [Key] перед первичным ключом, а можно просто имя "Id"
         public Guid Id { get; set; }
         public string Title { get; set; }
         public DateTime Date { get; set; }
@@ -15,4 +16,8 @@ namespace Domain
         public string City { get; set; }
         public string Venue { get; set; }
     }
+
+
+
 }
+
