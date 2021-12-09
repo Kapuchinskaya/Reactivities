@@ -32,7 +32,6 @@ namespace Application.Activities
                 await _context.SaveChangesAsync();
                 
                 return Unit.Value;
-                
             }
         }
     }
