@@ -1,20 +1,36 @@
 import { observer } from "mobx-react-lite";
-import React, { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
+import { Link, useHistory, withRouter } from "react-router-dom";
 import { Button, Form, Segment } from "semantic-ui-react";
-import { Activity } from "../../../app/models/activity";
+import LoadingComponent from "../../../app/layout/LoadingComponents";
 import { useStore } from "../../../app/stores/store";
+import { v4 as uuid } from "uuid";
 
-export default observer(function ActivityForm() {
+//TODO баг при edit => create activity (не меняется форма, хоть id и изменяется)
+//TODO баг при push history => не работает опять хук
+
+interface Props {
+  match: {
+    params: {
+      id?: string;
+    };
+  };
+}
+
+const ActivityForm = (props: Props) => {
+  // const history = useHistory();
   const { activityStore } = useStore();
   const {
-    selectedActivity,
-    closeForm,
     createActivity,
     updateActivity,
     loading,
+    loadActivity,
+    loadingInitial,
   } = activityStore;
 
-  const initialState = selectedActivity ?? {
+  const id = props.match.params.id;
+
+  const [activity, setActivity] = useState({
     id: "",
     title: "",
     category: "",
@@ -22,12 +38,26 @@ export default observer(function ActivityForm() {
     date: "",
     city: "",
     venue: "",
-  };
+  });
 
-  const [activity, setActivity] = useState(initialState);
+  useEffect(() => {
+    if (id) loadActivity(id).then((activity) => setActivity(activity!));
+    console.log(`вроде id ${id} обновляется, но компонент не перестраивается`);
+  }, [id, loadActivity]);
 
   function handleSubmit() {
-    activity.id ? updateActivity(activity) : createActivity(activity);
+    if (activity.id.length === 0) {
+      let newActivity = { ...activity, id: uuid() };
+      createActivity(newActivity).then(
+        () => console.log("надо перейти к новой активности")
+        // history.push(`/activities/${newActivity.id}`)
+      );
+    } else {
+      updateActivity(activity).then(
+        () => console.log("надо перейти к обновленной активности")
+        // history.push(`/activities/${activity.id}`)
+      );
+    }
   }
 
   function handleInputChange(
@@ -37,9 +67,7 @@ export default observer(function ActivityForm() {
     setActivity({ ...activity, [name]: value });
   }
 
-  // function handleDeleteActivity(id: string) {
-  //   setActivities([...activities.filter((x) => x.id !== id)]);
-  // }
+  if (loadingInitial) return <LoadingComponent content="Loading activity..." />;
 
   return (
     <Segment clearing>
@@ -89,7 +117,8 @@ export default observer(function ActivityForm() {
           content="Submit"
         />
         <Button
-          onClick={closeForm}
+          as={Link}
+          to="/activities"
           floated="right"
           type="button"
           content="Cancel"
@@ -97,4 +126,6 @@ export default observer(function ActivityForm() {
       </Form>
     </Segment>
   );
-});
+};
+
+export default withRouter(observer(ActivityForm));
