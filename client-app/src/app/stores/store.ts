@@ -1,8 +1,10 @@
 import { createContext, useContext } from "react";
 import ActivityStore from "./activityStore";
+import CommonStore from "./commonStore";
 
 interface Store {
   activityStore: ActivityStore;
+  commonStore: CommonStore;
 }
 
 //это будет в нашем контексте
@@ -10,6 +12,7 @@ interface Store {
 // и все они будут доступны в контексте StoreContext
 export const store: Store = {
   activityStore: new ActivityStore(),
+  commonStore: new CommonStore(),
 };
 
 //создаем реакт-контекст для этого
