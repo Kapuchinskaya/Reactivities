@@ -5,15 +5,13 @@ import { observer } from "mobx-react-lite";
 import HomePage from "../../features/home/HomePage";
 import ActivityDetails from "../../features/activities/details/ActivityDetails";
 import ActivityForm from "../../features/activities/form/ActivityForm";
-import { Route, Switch, useLocation } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 import TestErrors from "../../errors/TestError";
 import { ToastContainer } from "react-toastify";
 import NotFound from "../../errors/NotFound";
 import ServerError from "../../errors/ServerError";
 
 const App = () => {
-  // const location = useLocation();
-
   return (
     <>
       <ToastContainer position="bottom-right" hideProgressBar />
