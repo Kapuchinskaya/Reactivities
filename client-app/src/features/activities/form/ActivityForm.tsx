@@ -12,7 +12,7 @@ import MyTextArea from "../../../app/common/form/MyTextArea";
 import MySelectInput from "../../../app/common/form/MySelectInput";
 import { categoryOptions } from "../../../app/common/options/categoryOptions";
 import MyDateInput from "../../../app/common/form/myDateInput";
-import { Activity } from "../../../app/models/activity";
+import { Activity, ActivityFormValues } from "../../../app/models/activity";
 
 interface Props {
   match: {
@@ -37,15 +37,9 @@ const ActivityForm = (props: Props) => {
 
   const id = props.match.params.id;
 
-  const [activity, setActivity] = useState<Activity>({
-    id: "",
-    title: "",
-    category: "",
-    description: "",
-    date: null,
-    city: "",
-    venue: "",
-  });
+  const [activity, setActivity] = useState<ActivityFormValues>(
+    new ActivityFormValues()
+  );
 
   const validationSchema = Yup.object({
     title: Yup.string().required("The activity title is required"),
@@ -59,24 +53,25 @@ const ActivityForm = (props: Props) => {
   useEffect(() => {
     if (id) {
       loadActivity(id).then((activity) => {
-        setActivity(activity!);
+        setActivity(new ActivityFormValues(activity));
         console.log(activity);
       });
-    } else {
-      setActivity({
-        id: "",
-        title: "",
-        category: "",
-        description: "",
-        date: new Date(),
-        city: "",
-        venue: "",
-      });
     }
+    // else {
+    //   setActivity({
+    //     id: "",
+    //     title: "",
+    //     category: "",
+    //     description: "",
+    //     date: new Date(),
+    //     city: "",
+    //     venue: "",
+    //   });
+    // }
   }, [id, loadActivity]);
 
-  function handleFormSubmit(activity: Activity) {
-    if (activity.id.length === 0) {
+  function handleFormSubmit(activity: ActivityFormValues) {
+    if (!activity.id) {
       let newActivity = { ...activity, id: uuid() };
       createActivity(newActivity).then(() =>
         props.history.push(`/activities/${newActivity.id}`)
@@ -120,7 +115,7 @@ const ActivityForm = (props: Props) => {
             <MyTextInput placeholder="Venue" name="venue" />
             <Button
               disabled={isSubmitting || !dirty || !isValid}
-              loading={loading}
+              loading={isSubmitting}
               floated="right"
               positive
               type="submit"
