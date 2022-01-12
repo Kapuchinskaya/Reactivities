@@ -12,7 +12,7 @@ import MyTextArea from "../../../app/common/form/MyTextArea";
 import MySelectInput from "../../../app/common/form/MySelectInput";
 import { categoryOptions } from "../../../app/common/options/categoryOptions";
 import MyDateInput from "../../../app/common/form/myDateInput";
-import { Activity, ActivityFormValues } from "../../../app/models/activity";
+import { ActivityFormValues } from "../../../app/models/activity";
 
 interface Props {
   match: {
@@ -27,13 +27,8 @@ interface Props {
 
 const ActivityForm = (props: Props) => {
   const { activityStore } = useStore();
-  const {
-    loading,
-    loadActivity,
-    loadingInitial,
-    createActivity,
-    updateActivity,
-  } = activityStore;
+  const { loadActivity, loadingInitial, createActivity, updateActivity } =
+    activityStore;
 
   const id = props.match.params.id;
 
