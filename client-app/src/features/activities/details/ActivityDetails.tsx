@@ -24,6 +24,7 @@ const ActivityDetails = (props: Props) => {
     selectedActivity: activity,
     loadActivity,
     loadingInitial,
+    clearSelectedActivity,
   } = activityStore;
 
   const id = props.match.params.id;
@@ -31,8 +32,9 @@ const ActivityDetails = (props: Props) => {
   useEffect(() => {
     if (id) {
       loadActivity(id);
+      return () => clearSelectedActivity();
     }
-  }, [id, loadActivity]);
+  }, [id, loadActivity, clearSelectedActivity]);
 
   return loadingInitial || !activity ? (
     <LoadingComponent />
@@ -41,7 +43,7 @@ const ActivityDetails = (props: Props) => {
       <Grid.Column width={10}>
         <ActivityDetailedHeader activity={activity} />
         <ActivityDetailedInfo activity={activity} />
-        <ActivityDetailedChat />
+        <ActivityDetailedChat activityId={activity.id} />
       </Grid.Column>
       <Grid.Column width={6}>
         <ActivityDetailedSidebar activity={activity} />
